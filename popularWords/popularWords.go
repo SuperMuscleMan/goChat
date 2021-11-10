@@ -9,7 +9,7 @@ type wordTimeInfo struct {
 
 type wordInfo struct {
 	popular string
-	list []wordTimeInfo
+	list    []wordTimeInfo
 }
 
 const (
@@ -18,19 +18,27 @@ const (
 
 var wordMaps = make(map[string]wordInfo)
 
-func Timer(){
-	for{
+func Timer() {
+	for {
+		timerLogic()
+	}
+}
+
+func timerLogic() {
 	timeAfterTrigger := time.After(Expire * time.Second)
 	<-timeAfterTrigger
-		expireTime := time.Now().Unix() - Expire
-		for _, r := range wordMaps {
-			max := len(r.list)
-			for i := max - 1; i >= 0;i --  {
-				element := r.list[i]
-				if element.time < expireTime {
-					r.list = append(r.list[:i], r.list[i+1:]...)
-				}
+	expireTime := time.Now().Unix() - Expire
+	for _, r := range wordMaps {
+		max := len(r.list)
+		for i := max - 1; i >= 0; i-- {
+			element := r.list[i]
+			if element.time <= expireTime {
+				r.list = append(r.list[:i], r.list[i+1:]...)
 			}
+		}
+		if len(r.list)==0 {
+			delete(wordMaps, r.popular)
+		}else {
 			wordMaps[r.popular] = r
 		}
 	}
@@ -45,7 +53,7 @@ func GetPopular(limit int64) (string, bool) {
 	for _, r := range wordMaps {
 		num := 0
 		for _, e := range r.list {
-			if e.time >limitTime {
+			if e.time > limitTime {
 				num += e.num
 			}
 		}

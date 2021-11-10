@@ -76,16 +76,20 @@ func Handle(conn net.Conn) {
 		}
 		// 判断GM
 		body := string(buf[:n])
-		if !checkGM(name, body) {
-			// 判断创建聊天室
-			if !checkCreateGroup(name, body) {
-				//	私聊
-				if !checkSendOne(name, body) {
-					// 聊天室
-					if !checkSendAll(name, body) {
-						// 发送错误
-						sendChan <- sendChanMsg{name, name, cfg.MsgTypeSys, cfg.SysMsgSyntaxErr}
-					}
+		handleData(name, body)
+	}
+}
+
+func handleData(name string, body string) {
+	if !checkGM(name, body) {
+		// 判断创建聊天室
+		if !checkCreateGroup(name, body) {
+			//	私聊
+			if !checkSendOne(name, body) {
+				// 聊天室
+				if !checkSendAll(name, body) {
+					// 发送错误
+					sendChan <- sendChanMsg{name, name, cfg.MsgTypeSys, cfg.SysMsgSyntaxErr}
 				}
 			}
 		}

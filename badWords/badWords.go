@@ -30,12 +30,12 @@ func Init(path string) {
 			return
 		}
 		lineStr := string(line)
-		initAdd(badRoot, 0, len(lineStr), lineStr)
+		InitAdd(badRoot, 0, len(lineStr), lineStr)
 	}
 }
 
 // 加入map中
-func initAdd(maps map[string]badWords, index int, max int, r string) {
+func InitAdd(maps map[string]badWords, index int, max int, r string) {
 
 	if element, ok := maps[string(r[index])]; ok {
 		if (index + 1) == max {
@@ -43,7 +43,7 @@ func initAdd(maps map[string]badWords, index int, max int, r string) {
 			maps[string(r[index])] = element
 			return
 		}
-		initAdd(element.words, index+1, max, r)
+		InitAdd(element.words, index+1, max, r)
 	} else {
 		subElement := badWords{false, make(map[string]badWords)}
 		maps[string(r[index])] = subElement
@@ -52,7 +52,7 @@ func initAdd(maps map[string]badWords, index int, max int, r string) {
 			maps[string(r[index])] = subElement
 			return
 		}
-		initAdd(subElement.words, index+1, max, r)
+		InitAdd(subElement.words, index+1, max, r)
 	}
 }
 
